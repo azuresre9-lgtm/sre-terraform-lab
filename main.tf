@@ -46,7 +46,27 @@ resource "azurerm_subnet" "sre_subnet" {
   address_prefixes     = ["10.20.1.0/24"]
 }
 
+# Azure Container Registry (ACR) for SRE workloads
+resource "azurerm_container_registry" "sre_acr" {
+  name                = "srelabreg1391"
+  resource_group_name = data.azurerm_resource_group.lab_rg.name
+  location            = data.azurerm_resource_group.lab_rg.location
+  sku                 = "Basic"
+  admin_enabled       = true
+
+  tags = {
+    Environment = "Production"
+    ManagedBy   = "Terraform-VSCode"
+    Owner       = "SRE-Team"
+  }
+}
+
 output "vnet_id" {
   value       = azurerm_virtual_network.sre_vnet.id
   description = "The ARM Resource ID of the production Virtual Network"
+}
+
+output "acr_login_server" {
+  value       = azurerm_container_registry.sre_acr.login_server
+  description = "The URL used to log in and push Docker images"
 }
