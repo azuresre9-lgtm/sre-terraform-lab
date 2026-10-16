@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'app/**'
+      - 'sre-app/**'
       - 'k8s-deployment.yaml'
       - '.github/workflows/deploy.yml'
 
@@ -28,7 +28,7 @@ jobs:
       - name: Build and Push Docker Image
         run: |
           IMAGE_TAG=${{ github.sha }}
-          docker build -t srelabreg1391.azurecr.io/sre-app:$IMAGE_TAG -t srelabreg1391.azurecr.io/sre-app:latest ./app
+          docker build -t srelabreg1391.azurecr.io/sre-app:$IMAGE_TAG -t srelabreg1391.azurecr.io/sre-app:latest ./sre-app
           docker push srelabreg1391.azurecr.io/sre-app:$IMAGE_TAG
           docker push srelabreg1391.azurecr.io/sre-app:latest
 
