@@ -4,7 +4,7 @@
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.100.0"
+      version = "~> 4.0"
     }
   }
 
@@ -69,4 +69,45 @@ output "vnet_id" {
 output "acr_login_server" {
   value       = azurerm_container_registry.sre_acr.login_server
   description = "The URL used to log in and push Docker images"
+}
+# --- Sprint 3: Managed Azure Kubernetes Service (AKS) ---
+
+resource "azurerm_kubernetes_cluster" "sre_aks" {
+  name                = "aks-sre-prod"
+  location            = data.azurerm_resource_group.lab_rg.location
+  resource_group_name = data.azurerm_resource_group.lab_rg.name
+  dns_prefix          = "srelabk8s"
+
+  default_node_pool {
+    name           = "workloadpool"
+    node_count     = 1
+    vm_size        = "Standard_B2s_v2"
+    vnet_subnet_id = azurerm_subnet.sre_subnet.id
+  }
+
+  identity {
+    type = "SystemAssigned"
+  }
+
+  network_profile {
+    network_plugin    = "azure"
+    load_balancer_sku = "standard"
+  }
+
+  tags = {
+    Environment = "Production"
+    ManagedBy   = "Terraform-VSCode"
+    Owner       = "SRE-Team"
+  }
+}
+# Grant AKS System-Assigned Identity permission to pull from ACR
+resource "azurerm_role_assignment" "aks_acr_pull" {
+  principal_id                     = azurerm_kubernetes_cluster.sre_aks.kubelet_identity[0].object_id
+  role_definition_name             = "AcrPull"
+  scope                            = azurerm_container_registry.sre_acr.id
+  skip_service_principal_aad_check = true
+}
+output "aks_cluster_name" {
+  value       = azurerm_kubernetes_cluster.sre_aks.name
+  description = "Production AKS cluster name"
 }
