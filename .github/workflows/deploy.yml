@@ -1,0 +1,46 @@
+name: Build and Deploy to AKS
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'app/**'
+      - 'k8s-deployment.yaml'
+      - '.github/workflows/deploy.yml'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Log in to Azure Container Registry
+        run: |
+          az acr login --name srelabreg1391
+
+      - name: Build and Push Docker Image
+        run: |
+          IMAGE_TAG=${{ github.sha }}
+          docker build -t srelabreg1391.azurecr.io/sre-app:$IMAGE_TAG -t srelabreg1391.azurecr.io/sre-app:latest ./app
+          docker push srelabreg1391.azurecr.io/sre-app:$IMAGE_TAG
+          docker push srelabreg1391.azurecr.io/sre-app:latest
+
+      - name: Set AKS Context
+        uses: azure/aks-set-context@v4
+        with:
+          resource-group: RG-SRE-LAB
+          cluster-name: aks-sre-prod
+
+      - name: Deploy to Kubernetes
+        run: |
+          IMAGE_TAG=${{ github.sha }}
+          sed -i "s|image: srelabreg1391.azurecr.io/sre-app:.*|image: srelabreg1391.azurecr.io/sre-app:$IMAGE_TAG|g" k8s-deployment.yaml
+          kubectl apply -f k8s-deployment.yaml
+          kubectl rollout status deployment/sre-app-deployment --timeout=180s
