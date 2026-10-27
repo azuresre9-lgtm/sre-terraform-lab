@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: sre-app-alerts
+  namespace: monitoring
+  labels:
+    release: monitoring-stack
+spec:
+  groups:
+  - name: sre-app.rules
+    rules:
+    - alert: SreAppHighCpuUsage
+      expr: sum(rate(container_cpu_usage_seconds_total{pod=~"sre-app-deployment-.*"}[1m])) > 0.003
+      for: 15s
+      labels:
+        severity: critical
+        team: sre-oncall
+      annotations:
+        summary: "High CPU usage detected on sre-app workload"
+        description: "Pod CPU usage has exceeded 3m cores for more than 15 seconds. Current value: {{ $value }}"

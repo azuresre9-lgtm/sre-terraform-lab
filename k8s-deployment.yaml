@@ -44,7 +44,7 @@ kind: Service
 metadata:
   name: sre-app-service
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: sre-app
   ports:
