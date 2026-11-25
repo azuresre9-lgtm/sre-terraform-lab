@@ -1,0 +1,2 @@
+2026-11-25 01:06:00 ALERT [MOOG-9041] Target=vm-I2CP-EUR-APP-P-ETL-01 Port=443 Endpoint=/api/healthz Status=503_Service_Unavailable
+2026-11-25 01:06:30 INFO  [MOOG-9041] Escalation Matrix: L2_24x7_SRE -> Check systemd service & KeyVault RBAC
