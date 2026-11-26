@@ -1,0 +1,15 @@
+[Unit]
+Description=Cockpit Platform .NET Core Web API (I2CP Prod)
+After=network.target
+
+[Service]
+Type=notify
+WorkingDirectory=/opt/cockpit/webapi
+ExecStart=/usr/bin/dotnet /opt/cockpit/webapi/Cockpit.WebApi.dll --urls "http://0.0.0.0:5000"
+Restart=always
+RestartSec=5
+Environment=ASPNETCORE_ENVIRONMENT=Production
+User=cockpit-svc
+
+[Install]
+WantedBy=multi-user.target

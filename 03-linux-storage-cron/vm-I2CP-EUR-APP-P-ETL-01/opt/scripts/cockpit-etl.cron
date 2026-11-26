@@ -1,0 +1,2 @@
+# m  h  dom mon dow   command
+30 2 * * 0 /opt/scripts/archive_cockpit_reports.sh >> /var/log/etl/cron-archive.log 2>&1
