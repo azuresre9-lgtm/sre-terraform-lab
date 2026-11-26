@@ -1,0 +1,7 @@
+2026-11-25 01:00:02 INFO  [vm-I2CP-EUR-APP-P-ETL-01] [Cockpit.ETL.Worker] Job started: Monthly_Executive_Report
+2026-11-25 01:00:18 INFO  [vm-I2CP-EUR-APP-P-ETL-01] [Identity.ManagedID] Token acquired from I2_Identity tenant
+2026-11-25 01:01:44 WARN  [vm-I2CP-EUR-APP-P-ETL-01] [CosmosDB.Client] 429 RequestRateTooLarge on container 'TelemetryEvents' - backoff 2000ms
+2026-11-25 01:03:12 ERROR [vm-I2CP-EUR-APP-P-ETL-01] [KeyVault.Secret] AccessDenied: Secret 'cosmos-ro-connstr' in kv-I2CP-EUR-PRD-01 returned 403 Forbidden
+2026-11-25 01:03:15 ERROR [vm-I2CP-EUR-APP-P-ETL-01] [Storage.SMB] Mount /mnt/saI2CPEURreport01 not writable - Permission denied (errno 13)
+2026-11-25 01:04:00 INFO  [vm-I2CP-EUR-APP-P-ETL-01] [HealthProbe] /api/healthz responded 200 OK
+2026-11-25 01:05:10 CRITICAL [vm-I2CP-EUR-APP-P-ETL-01] [Cockpit.ETL.Worker] Job aborted after 2 fatal errors. Moogsoft alert triggered.
